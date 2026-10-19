@@ -117,18 +117,16 @@
         html.dark ::-webkit-scrollbar-thumb { background: #475569; }
         html.dark ::-webkit-scrollbar-thumb:hover { background: #64748B; }
 
-        /* Face recognition specific */
         #face-video, #face-canvas {
             border-radius: 16px;
             max-width: 100%;
             background: #000;
         }
-        .face-result-card {
-            transition: all 0.2s;
-        }
+        .face-result-card { transition: all 0.2s; }
     </style>
 </head>
 <body class="font-sans text-neutral-800 min-h-screen flex flex-col scroll-smooth">
+
     <!-- Header -->
     <header class="glass sticky top-0 z-40 border-b border-white/50 shadow-sm">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -142,18 +140,14 @@
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <!-- Nút Nhận diện khuôn mặt -->
-                <button id="face-btn" title="Nhận diện khuôn mặt" aria-label="Nhận diện khuôn mặt"
-                    class="flex items-center gap-2 px-3 sm:px-4 py-2.5 rounded-xl bg-white border border-neutral-200 hover:border-primary/50 hover:shadow-md transition-all text-sm font-medium text-neutral-700">
+                <button id="face-btn" title="Nhận diện khuôn mặt" class="flex items-center gap-2 px-3 sm:px-4 py-2.5 rounded-xl bg-white border border-neutral-200 hover:border-primary/50 hover:shadow-md transition-all text-sm font-medium text-neutral-700">
                     <i class="fa fa-camera text-primary"></i>
                     <span class="hidden sm:inline">Nhận diện khuôn mặt</span>
                 </button>
-                <button id="theme-btn" title="Chuyển giao diện Sáng / Tối" aria-label="Chuyển giao diện Sáng / Tối"
-                    class="flex items-center justify-center w-11 h-11 rounded-xl bg-white border border-neutral-200 hover:border-primary/50 hover:shadow-md transition-all text-neutral-700">
+                <button id="theme-btn" title="Chuyển giao diện Sáng / Tối" class="flex items-center justify-center w-11 h-11 rounded-xl bg-white border border-neutral-200 hover:border-primary/50 hover:shadow-md transition-all text-neutral-700">
                     <i id="theme-icon" class="fa fa-moon-o text-primary text-lg"></i>
                 </button>
-                <button id="settings-btn"
-                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-neutral-200 hover:border-primary/50 hover:shadow-md transition-all text-sm font-medium text-neutral-700">
+                <button id="settings-btn" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-neutral-200 hover:border-primary/50 hover:shadow-md transition-all text-sm font-medium text-neutral-700">
                     <i class="fa fa-cog text-primary"></i>
                     <span class="hidden sm:inline">Cấu Hình API</span>
                 </button>
@@ -170,7 +164,7 @@
 
     <!-- Modal Cấu Hình API -->
     <div id="api-modal" class="fixed inset-0 z-50 hidden">
-        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" id="modal-overlay"></div>
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" id="modal-overlay"></div>
         <div class="absolute inset-0 flex items-center justify-center p-4 overflow-y-auto">
             <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl my-4 overflow-hidden relative">
                 <div class="gradient-main text-white p-6">
@@ -184,20 +178,20 @@
                         <label for="ai-name" class="block font-semibold text-neutral-800 mb-2">🏷️ Tên gợi nhớ cho AI</label>
                         <input type="text" id="ai-name" maxlength="24" placeholder="Ví dụ: Cô Mai, Thầy Bông, Bé Bi..."
                             class="w-full p-3.5 border-2 border-neutral-200 rounded-xl input-focus focus:border-primary outline-none transition-all text-base">
-                        <p class="text-sm text-neutral-500 mt-2">Đặt tên thân thiện cho trợ lý — AI sẽ xưng hô và hiển thị bằng tên này (tối đa 24 ký tự).</p>
+                        <p class="text-sm text-neutral-500 mt-2">Đặt tên thân thiện cho trợ lý (tối đa 24 ký tự).</p>
                     </div>
                     <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl mb-6">
                         <p class="font-semibold text-amber-800 text-sm flex items-center gap-1.5">
                             <i class="fa fa-lightbulb-o"></i> Gợi ý tốt nhất
                         </p>
                         <p class="text-amber-700 text-sm mt-1">
-                            Chọn <strong>Gemini Flash-Lite</strong> hoặc <strong>Groq Llama</strong> — hoàn toàn miễn phí, không cần thẻ tín dụng!
+                            Chọn <strong>Gemini Flash-Lite</strong> hoặc <strong>Groq Llama</strong> — miễn phí, không cần thẻ tín dụng!
                         </p>
                     </div>
                     <p class="font-semibold text-neutral-800 mb-3">📋 Chọn phiên bản AI miễn phí:</p>
                     <div class="grid gap-3 mb-6">
                         <label class="model-card rounded-xl p-4 cursor-pointer block">
-                            <input type="radio" name="model" value="gemini-flash-lite" class="hidden">
+                            <input type="radio" name="model" value="gemini-flash-lite" class="hidden" checked>
                             <div class="flex items-start gap-3">
                                 <div class="w-5 h-5 mt-0.5 rounded-full border-2 border-neutral-300 flex items-center justify-center flex-shrink-0 radio-indicator">
                                     <span class="w-2.5 h-2.5 rounded-full bg-primary scale-0 transition-transform"></span>
@@ -207,9 +201,9 @@
                                         <span class="font-bold text-neutral-800">🔷 Google Gemini Flash-Lite</span>
                                         <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium">Khuyến nghị</span>
                                     </div>
-                                    <p class="text-sm text-neutral-600 mt-1">✅ Miễn phí vĩnh viễn • Phản hồi nhanh • Hỗ trợ tiếng Việt tuyệt vời</p>
+                                    <p class="text-sm text-neutral-600 mt-1">✅ Miễn phí vĩnh viễn • Phản hồi nhanh • Hỗ trợ tiếng Việt tốt</p>
                                     <p class="text-xs text-primary mt-1.5">
-                                        🔑 Lấy key miễn phí: <a href="https://aistudio.google.com/apikey" target="_blank" class="underline hover:text-primaryDark">aistudio.google.com/apikey</a>
+                                        🔑 Lấy key: <a href="https://aistudio.google.com/apikey" target="_blank" class="underline hover:text-primaryDark">aistudio.google.com/apikey</a>
                                     </p>
                                 </div>
                             </div>
@@ -227,7 +221,7 @@
                                     </div>
                                     <p class="text-sm text-neutral-600 mt-1">✅ Miễn phí • 30 yêu cầu/phút • Phản hồi tức thì</p>
                                     <p class="text-xs text-primary mt-1.5">
-                                        🔑 Lấy key miễn phí: <a href="https://console.groq.com/keys" target="_blank" class="underline hover:text-primaryDark">console.groq.com/keys</a>
+                                        🔑 Lấy key: <a href="https://console.groq.com/keys" target="_blank" class="underline hover:text-primaryDark">console.groq.com/keys</a>
                                     </p>
                                 </div>
                             </div>
@@ -240,7 +234,7 @@
                                 </div>
                                 <div class="flex-1">
                                     <span class="font-bold text-neutral-800">🌐 OpenRouter — Nhiều Model</span>
-                                    <p class="text-sm text-neutral-600 mt-1">✅ 50 yêu cầu/ngày miễn phí • Qwen, DeepSeek, Gemma…</p>
+                                    <p class="text-sm text-neutral-600 mt-1">✅ 50 yêu cầu/ngày miễn phí</p>
                                     <p class="text-xs text-primary mt-1.5">
                                         🔑 Lấy key: <a href="https://openrouter.ai/keys" target="_blank" class="underline hover:text-primaryDark">openrouter.ai/keys</a>
                                     </p>
@@ -254,25 +248,10 @@
                                     <span class="w-2.5 h-2.5 rounded-full bg-primary scale-0 transition-transform"></span>
                                 </div>
                                 <div class="flex-1">
-                                    <span class="font-bold text-neutral-800">🧠 DeepSeek V4 Flash</span>
-                                    <p class="text-sm text-neutral-600 mt-1">✅ ~60 lượt/ngày miễn phí • Giải toán rất tốt</p>
+                                    <span class="font-bold text-neutral-800">🧠 DeepSeek</span>
+                                    <p class="text-sm text-neutral-600 mt-1">✅ ~60 lượt/ngày miễn phí • Giải toán tốt</p>
                                     <p class="text-xs text-primary mt-1.5">
                                         🔑 Lấy key: <a href="https://platform.deepseek.com/api_keys" target="_blank" class="underline hover:text-primaryDark">platform.deepseek.com</a>
-                                    </p>
-                                </div>
-                            </div>
-                        </label>
-                        <label class="model-card rounded-xl p-4 cursor-pointer block opacity-75">
-                            <input type="radio" name="model" value="openai" class="hidden">
-                            <div class="flex items-start gap-3">
-                                <div class="w-5 h-5 mt-0.5 rounded-full border-2 border-neutral-300 flex items-center justify-center flex-shrink-0 radio-indicator">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-primary scale-0 transition-transform"></span>
-                                </div>
-                                <div class="flex-1">
-                                    <span class="font-bold text-neutral-800">💬 OpenAI GPT</span>
-                                    <p class="text-sm text-warning mt-1">⚠️ Không có gói miễn phí — cần nạp tiền</p>
-                                    <p class="text-xs text-primary mt-1.5">
-                                        🔑 Lấy key: <a href="https://platform.openai.com/api-keys" target="_blank" class="underline hover:text-primaryDark">platform.openai.com</a>
                                     </p>
                                 </div>
                             </div>
@@ -285,7 +264,7 @@
                         <p id="key-hint" class="text-sm text-neutral-500 mt-2">Chọn model để xem hướng dẫn lấy key</p>
                     </div>
                     <div class="flex gap-3">
-                        <button id="save-api" class="flex-1 gradient-main text-white py-3.5 rounded-xl font-semibold hover:shadow-lg hover:shadow-primary/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+                        <button id="save-api" class="flex-1 gradient-main text-white py-3.5 rounded-xl font-semibold hover:shadow-lg transition-all">
                             <i class="fa fa-save mr-2"></i> Lưu & Kết Nối
                         </button>
                         <button id="close-modal" class="px-5 py-3.5 border-2 border-neutral-200 rounded-xl font-medium hover:bg-neutral-50 transition-all">
@@ -297,7 +276,7 @@
         </div>
     </div>
 
-    <!-- ==================== MODAL NHẬN DIỆN KHUÔN MẶT ==================== -->
+    <!-- Modal Nhận diện khuôn mặt -->
     <div id="face-modal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" id="face-modal-overlay"></div>
         <div class="absolute inset-0 flex items-center justify-center p-4 overflow-y-auto">
@@ -315,17 +294,14 @@
                 </div>
 
                 <div class="p-5 md:p-6">
-                    <!-- Trạng thái model -->
                     <div id="face-status" class="mb-4 text-center text-sm font-medium text-amber-600">
                         <i class="fa fa-spinner fa-spin mr-2"></i> Đang tải mô hình AI... (chỉ lần đầu)
                     </div>
 
-                    <!-- Camera + Canvas -->
                     <div class="relative mx-auto mb-5" style="max-width: 640px;">
                         <video id="face-video" autoplay muted playsinline class="w-full rounded-2xl shadow-lg" style="display:none;"></video>
                         <canvas id="face-canvas" class="w-full rounded-2xl shadow-lg absolute top-0 left-0" style="display:none;"></canvas>
                         
-                        <!-- Placeholder khi chưa bật camera -->
                         <div id="face-placeholder" class="w-full aspect-video bg-neutral-100 dark:bg-neutral-900 rounded-2xl flex flex-col items-center justify-center text-neutral-500 border-2 border-dashed border-neutral-300 dark:border-neutral-600">
                             <i class="fa fa-camera text-5xl mb-3 opacity-50"></i>
                             <p class="font-medium">Nhấn "Bật camera" để bắt đầu</p>
@@ -333,7 +309,6 @@
                         </div>
                     </div>
 
-                    <!-- Nút điều khiển -->
                     <div class="flex flex-wrap justify-center gap-3 mb-5">
                         <button id="start-camera-btn" class="gradient-main text-white px-5 py-2.5 rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2">
                             <i class="fa fa-video-camera"></i> Bật camera
@@ -346,7 +321,6 @@
                         </button>
                     </div>
 
-                    <!-- Kết quả phân tích -->
                     <div id="face-results" class="space-y-3 hidden">
                         <h4 class="font-bold text-neutral-800 dark:text-neutral-100 flex items-center gap-2">
                             <i class="fa fa-bar-chart text-primary"></i> Kết quả phân tích
@@ -366,7 +340,7 @@
         <div class="max-w-3xl mx-auto">
             <div id="welcome-section" class="mb-6 text-center">
                 <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold gradient-text mb-2">Trợ Lý Giải Thích Kiến Thức</h2>
-                <p class="text-neutral-600 max-w-lg mx-auto">Đặt câu hỏi bất kỳ — từ bài tập Toán, phân tích tác phẩm Văn học đến kiến thức Khoa học — AI sẽ giải thích dễ hiểu nhất cho bạn</p>
+                <p class="text-neutral-600 max-w-lg mx-auto">Đặt câu hỏi bất kỳ — AI sẽ giải thích dễ hiểu nhất cho bạn</p>
             </div>
             <div class="bg-white rounded-3xl shadow-card overflow-hidden flex flex-col border border-white/80" style="height: 70vh; min-height: 500px;">
                 <div id="chat-messages" class="flex-1 p-4 md:p-6 overflow-y-auto bg-neutral-50/50 space-y-4">
@@ -377,15 +351,7 @@
                         <div class="bg-white p-4 md:p-5 chat-bubble-ai max-w-[88%] shadow-sm border border-neutral-100">
                             <p class="font-bold text-primary mb-2">👋 Xin chào! Tôi là <span class="ai-name-label">AI Trợ Giúp</span></p>
                             <p class="text-neutral-700 mb-2">Tôi có thể giải thích mọi kiến thức cho bạn một cách dễ hiểu nhất.</p>
-                            <p class="text-neutral-600 mb-3">Để bắt đầu, nhấn nút <strong class="text-primary">"Cấu Hình API"</strong> ở góc trên → đặt tên gợi nhớ cho tôi, chọn một model miễn phí → lấy key theo liên kết hướng dẫn → dán vào ô và Lưu nhé!</p>
-                            <div class="bg-neutral-50 rounded-lg p-3 text-sm text-neutral-600 border border-neutral-100">
-                                <p class="font-medium text-neutral-700 mb-1">💡 Ví dụ câu hỏi:</p>
-                                <ul class="space-y-1 text-neutral-500">
-                                    <li>• "Giải thích định luật Pythagoras với ví dụ cụ thể"</li>
-                                    <li>• "Tóm tắt nội dung và giá trị tác phẩm Tắt đèn"</li>
-                                    <li>• "Tại sao lá cây có màu xanh?"</li>
-                                </ul>
-                            </div>
+                            <p class="text-neutral-600 mb-3">Để bắt đầu, nhấn nút <strong class="text-primary">"Cấu Hình API"</strong> ở góc trên → chọn model miễn phí → lấy key → dán vào và Lưu nhé!</p>
                         </div>
                     </div>
                 </div>
@@ -408,13 +374,13 @@
     </footer>
 
     <script>
-        // ==================== CẤU HÌNH MODEL AI ====================
+        // ==================== CẤU HÌNH MODEL ====================
         const MODELS = {
             'gemini-flash-lite': {
                 name: 'Gemini Flash-Lite',
                 provider: 'gemini',
-                model: 'gemini-2.0-flash-lite',
-                endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent',
+                model: 'gemini-3.5-flash-lite',
+                endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent',
                 hint: '✅ Miễn phí vĩnh viễn | Lấy key tại: aistudio.google.com/apikey'
             },
             'groq-llama': {
@@ -432,18 +398,11 @@
                 hint: '✅ 50 lượt/ngày miễn phí | Lấy key tại: openrouter.ai/keys'
             },
             'deepseek': {
-                name: 'DeepSeek V4 Flash',
+                name: 'DeepSeek',
                 provider: 'deepseek',
                 model: 'deepseek-chat',
                 endpoint: 'https://api.deepseek.com/v1/chat/completions',
                 hint: '✅ ~60 lượt/ngày miễn phí | Lấy key tại: platform.deepseek.com'
-            },
-            'openai': {
-                name: 'OpenAI GPT',
-                provider: 'openai',
-                model: 'gpt-3.5-turbo',
-                endpoint: 'https://api.openai.com/v1/chat/completions',
-                hint: '⚠️ Không miễn phí — cần nạp tiền | Lấy key tại: platform.openai.com'
             }
         };
 
@@ -462,7 +421,7 @@
             isConfigured: false
         };
 
-        // ==================== DOM ELEMENTS ====================
+        // ==================== DOM ====================
         const modal = document.getElementById('api-modal');
         const overlay = document.getElementById('modal-overlay');
         const settingsBtn = document.getElementById('settings-btn');
@@ -481,7 +440,7 @@
         const themeBtn = document.getElementById('theme-btn');
         const themeIcon = document.getElementById('theme-icon');
 
-        // Face recognition elements
+        // Face
         const faceBtn = document.getElementById('face-btn');
         const faceModal = document.getElementById('face-modal');
         const faceModalOverlay = document.getElementById('face-modal-overlay');
@@ -558,7 +517,7 @@
                 statusBar.className = 'border-b py-2.5 px-4 text-center text-sm transition-all duration-300 bg-green-50/80 border-green-100';
                 statusText.className = 'text-green-700 font-medium';
                 sendBtn.disabled = false;
-                sendBtn.className = 'w-11 h-11 rounded-xl flex items-center justify-center transition-all flex-shrink-0 gradient-main text-white hover:shadow-lg hover:shadow-primary/20 transform hover:-translate-y-0.5 active:translate-y-0';
+                sendBtn.className = 'w-11 h-11 rounded-xl flex items-center justify-center transition-all flex-shrink-0 gradient-main text-white hover:shadow-lg transform hover:-translate-y-0.5';
             } else {
                 statusText.innerHTML = `<i class="fa fa-exclamation-triangle mr-1.5"></i> Chưa cấu hình — Nhấn "Cấu Hình API" để bắt đầu`;
                 statusBar.className = 'border-b py-2.5 px-4 text-center text-sm transition-all duration-300 bg-amber-50/80 border-amber-100';
@@ -589,6 +548,7 @@
             updateStatus();
             refreshAiNameLabels();
             closeModalFunc();
+            
             const notification = document.createElement('div');
             notification.className = 'fixed top-20 right-4 bg-green-500 text-white px-6 py-3 rounded-xl shadow-lg z-50 flex items-center gap-2';
             notification.innerHTML = '<i class="fa fa-check-circle"></i> Đã kết nối thành công!';
@@ -610,14 +570,14 @@
                 addMessage(answer, 'ai');
             } catch (err) {
                 removeLoading(loadingId);
-                addMessage(`❌ **Lỗi kết nối:** ${err.message}\n\n💡 **Cách khắc phục:**\n• Kiểm tra lại API Key đã dán đúng chưa\n• Kiểm tra hạn mức sử dụng của model\n• Thử chọn nhà cung cấp khác`, 'ai');
+                addMessage(`❌ **Lỗi kết nối:** ${err.message}\n\n💡 **Cách khắc phục:**\n• Kiểm tra lại API Key đã dán đúng chưa\n• Kiểm tra hạn mức sử dụng của model\n• Thử chọn nhà cung cấp khác (Groq hoặc OpenRouter)`, 'ai');
                 console.error(err);
             }
         });
 
         async function callAI(question) {
             const modelInfo = MODELS[CONFIG.selectedModel];
-            const systemPrompt = `Bạn là trợ lý AI hỗ trợ học tập tuyệt vời, thân thiện, dễ gần. Người dùng gọi bạn bằng cái tên "${getAiName()}" — hãy tự xưng bằng tên này khi phù hợp (ví dụ khi chào hỏi hoặc giới thiệu bản thân). Nhiệm vụ:
+            const systemPrompt = `Bạn là trợ lý AI hỗ trợ học tập tuyệt vời, thân thiện, dễ gần. Người dùng gọi bạn bằng cái tên "${getAiName()}" — hãy tự xưng bằng tên này khi phù hợp. Nhiệm vụ:
 - Giải thích kiến thức đơn giản, rõ ràng, phù hợp học sinh-sinh viên Việt Nam
 - Dùng ví dụ cụ thể, dễ liên hệ
 - Sử dụng cấu trúc rõ ràng
@@ -638,9 +598,17 @@
                         }]
                     })
                 });
-                if (!res.ok) throw new Error(`Lỗi ${res.status} — Kiểm tra key hoặc hạn mức`);
+
                 const data = await res.json();
-                if (!data.candidates?.[0]?.content?.parts?.[0]?.text) throw new Error('Không nhận được phản hồi');
+                
+                if (!res.ok) {
+                    const errMsg = data?.error?.message || `Lỗi HTTP ${res.status}`;
+                    throw new Error(errMsg);
+                }
+                
+                if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+                    throw new Error('Không nhận được phản hồi từ Gemini. Key có thể bị hạn chế hoặc model tạm thời lỗi.');
+                }
                 return data.candidates[0].content.parts[0].text;
             } else {
                 const headers = {
@@ -663,8 +631,13 @@
                         temperature: 0.7
                     })
                 });
-                if (!res.ok) throw new Error(`Lỗi ${res.status}`);
+                
                 const data = await res.json();
+                
+                if (!res.ok) {
+                    const errMsg = data?.error?.message || `Lỗi HTTP ${res.status}`;
+                    throw new Error(errMsg);
+                }
                 return data.choices[0].message.content;
             }
         }
@@ -760,8 +733,10 @@
         const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/';
 
         async function loadFaceModels() {
-            if (faceModelsLoaded) return;
+            if (faceModelsLoaded) return true;
             faceStatus.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> Đang tải mô hình AI... (chỉ lần đầu, khoảng 10-20 giây)';
+            faceStatus.className = 'mb-4 text-center text-sm font-medium text-amber-600';
+            
             try {
                 await Promise.all([
                     faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
@@ -772,10 +747,12 @@
                 faceModelsLoaded = true;
                 faceStatus.innerHTML = '<i class="fa fa-check-circle text-green-500 mr-2"></i> Mô hình đã sẵn sàng!';
                 faceStatus.className = 'mb-4 text-center text-sm font-medium text-green-600';
+                return true;
             } catch (err) {
                 console.error(err);
-                faceStatus.innerHTML = '<i class="fa fa-exclamation-triangle text-red-500 mr-2"></i> Lỗi tải mô hình. Kiểm tra kết nối mạng.';
+                faceStatus.innerHTML = '<i class="fa fa-exclamation-triangle text-red-500 mr-2"></i> Lỗi tải mô hình. Kiểm tra kết nối mạng và thử lại.';
                 faceStatus.className = 'mb-4 text-center text-sm font-medium text-red-600';
+                return false;
             }
         }
 
@@ -796,10 +773,9 @@
         captureBtn.addEventListener('click', captureAndAnalyze);
 
         async function startCamera() {
-            if (!faceModelsLoaded) {
-                await loadFaceModels();
-                if (!faceModelsLoaded) return;
-            }
+            const loaded = await loadFaceModels();
+            if (!loaded) return;
+
             try {
                 stream = await navigator.mediaDevices.getUserMedia({
                     video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
@@ -841,7 +817,7 @@
             faceCanvas.style.display = 'none';
             facePlaceholder.style.display = 'flex';
             const ctx = faceCanvas.getContext('2d');
-            ctx.clearRect(0, 0, faceCanvas.width, faceCanvas.height);
+            if (ctx) ctx.clearRect(0, 0, faceCanvas.width, faceCanvas.height);
 
             startCameraBtn.disabled = false;
             stopCameraBtn.disabled = true;
@@ -854,39 +830,42 @@
             if (detectionInterval) clearInterval(detectionInterval);
             detectionInterval = setInterval(async () => {
                 if (!faceVideo.srcObject || faceVideo.paused || faceVideo.ended) return;
-                const detections = await faceapi
-                    .detectAllFaces(faceVideo, new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 }))
-                    .withFaceLandmarks()
-                    .withFaceExpressions()
-                    .withAgeAndGender();
+                
+                try {
+                    const detections = await faceapi
+                        .detectAllFaces(faceVideo, new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 }))
+                        .withFaceLandmarks()
+                        .withFaceExpressions()
+                        .withAgeAndGender();
 
-                const ctx = faceCanvas.getContext('2d');
-                ctx.clearRect(0, 0, faceCanvas.width, faceCanvas.height);
-                // Vẽ video lên canvas trước
-                ctx.drawImage(faceVideo, 0, 0, faceCanvas.width, faceCanvas.height);
+                    const ctx = faceCanvas.getContext('2d');
+                    ctx.clearRect(0, 0, faceCanvas.width, faceCanvas.height);
+                    ctx.drawImage(faceVideo, 0, 0, faceCanvas.width, faceCanvas.height);
 
-                const resized = faceapi.resizeResults(detections, {
-                    width: faceCanvas.width,
-                    height: faceCanvas.height
-                });
+                    const resized = faceapi.resizeResults(detections, {
+                        width: faceCanvas.width,
+                        height: faceCanvas.height
+                    });
 
-                faceapi.draw.drawDetections(faceCanvas, resized);
-                faceapi.draw.drawFaceLandmarks(faceCanvas, resized);
+                    faceapi.draw.drawDetections(faceCanvas, resized);
+                    faceapi.draw.drawFaceLandmarks(faceCanvas, resized);
 
-                // Vẽ thêm thông tin
-                resized.forEach(det => {
-                    const { age, gender, genderProbability, expressions } = det;
-                    const box = det.detection.box;
-                    const topExpression = Object.entries(expressions).sort((a, b) => b[1] - a[1])[0];
+                    resized.forEach(det => {
+                        const { age, gender, genderProbability, expressions } = det;
+                        const box = det.detection.box;
+                        const topExpression = Object.entries(expressions).sort((a, b) => b[1] - a[1])[0];
 
-                    ctx.fillStyle = 'rgba(37, 99, 235, 0.85)';
-                    ctx.fillRect(box.x, box.y - 45, box.width, 40);
-                    ctx.fillStyle = '#fff';
-                    ctx.font = 'bold 13px Inter, sans-serif';
-                    ctx.fillText(`${Math.round(age)} tuổi • ${gender === 'male' ? 'Nam' : 'Nữ'} (${Math.round(genderProbability * 100)}%)`, box.x + 6, box.y - 28);
-                    ctx.fillText(`Cảm xúc: ${translateEmotion(topExpression[0])} ${Math.round(topExpression[1] * 100)}%`, box.x + 6, box.y - 10);
-                });
-            }, 200); // 5 FPS để mượt mà
+                        ctx.fillStyle = 'rgba(37, 99, 235, 0.85)';
+                        ctx.fillRect(box.x, box.y - 45, box.width, 40);
+                        ctx.fillStyle = '#fff';
+                        ctx.font = 'bold 13px Inter, sans-serif';
+                        ctx.fillText(`${Math.round(age)} tuổi • ${gender === 'male' ? 'Nam' : 'Nữ'} (${Math.round(genderProbability * 100)}%)`, box.x + 6, box.y - 28);
+                        ctx.fillText(`Cảm xúc: ${translateEmotion(topExpression[0])} ${Math.round(topExpression[1] * 100)}%`, box.x + 6, box.y - 10);
+                    });
+                } catch (e) {
+                    // bỏ qua lỗi tạm thời
+                }
+            }, 250);
         }
 
         async function captureAndAnalyze() {
