@@ -21,6 +21,17 @@
             set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
         };
     </script>
+    <script>
+        // Chọn giao diện: ưu tiên lựa chọn đã lưu, nếu chưa có thì theo hệ điều hành
+        (function () {
+            var t = null;
+            try { t = localStorage.getItem('theme'); } catch (e) {}
+            if (t !== 'dark' && t !== 'light') {
+                t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+            }
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
     <style>
         * { font-family: 'Inter', sans-serif; }
         body { background: linear-gradient(135deg, #F0F4FF 0%, #F8FAFC 50%, #ECFDF5 100%); background-attachment: fixed; }
@@ -50,17 +61,67 @@
         /* Công thức toán */
         .math-block { overflow-x: auto; margin: 8px 0; text-align: center; }
         .katex { font-size: 1.05em; }
-        .voice-control { width: 44px; height: 44px; flex: 0 0 44px; border: 2px solid #e2e8f0; border-radius: 12px; color: #2563eb; display: inline-flex; align-items: center; justify-content: center; transition: all .2s ease; }
-        .voice-control:hover { border-color: #93c5fd; background: #eff6ff; }
-        .voice-control.voice-active { color: #fff; border-color: transparent; background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); box-shadow: 0 0 0 4px rgba(37,99,235,.12); }
-        .voice-control:disabled { opacity: .45; cursor: not-allowed; }
-        .voice-status { display: none; margin-top: 10px; color: #475569; font-size: 13px; }
-        .voice-status.is-visible { display: block; }
-        .voice-status.is-listening { color: #2563eb; }
-        .voice-status.is-speaking { color: #7c3aed; }
-        .api-key-note { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; }
-        @keyframes voice-pulse { 50% { box-shadow: 0 0 0 8px rgba(37,99,235,.08); } }
-        .voice-control.voice-listening { animation: voice-pulse 1.2s infinite; }
+        /* Giọng nói */
+        .voice-bar { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:12px; }
+        .vbtn { display:inline-flex; align-items:center; gap:6px; padding:7px 12px; border-radius:999px; border:2px solid #E2E8F0; background:#fff; color:#334155; font-size:.8rem; font-weight:600; cursor:pointer; transition:all .2s; }
+        .vbtn:hover { border-color:rgba(37,99,235,.5); background:#F8FAFC; }
+        .vbtn.active { background:linear-gradient(135deg,#2563EB 0%,#7C3AED 100%); color:#fff; border-color:transparent; }
+        .vstatus { font-size:.8rem; color:#2563EB; font-weight:600; }
+        .mic-on { background:#EF4444 !important; color:#fff !important; border-color:#EF4444 !important; animation:micpulse 1.2s infinite; }
+        @keyframes micpulse { 0%,100% { box-shadow:0 0 0 0 rgba(239,68,68,.5); } 50% { box-shadow:0 0 0 8px rgba(239,68,68,0); } }
+        .speak-btn { margin-top:8px; font-size:.75rem; color:#2563EB; background:#EFF6FF; border:1px solid #DBEAFE; border-radius:999px; padding:3px 10px; cursor:pointer; }
+        .speak-btn:hover { background:#DBEAFE; }
+
+        /* ===== Giao diện tối ===== */
+        html[data-theme="dark"] { color-scheme: dark; }
+        html[data-theme="dark"] body { background: linear-gradient(135deg, #0B1220 0%, #0F172A 50%, #0B1F1A 100%); background-attachment: fixed; color: #E2E8F0; }
+        html[data-theme="dark"] .glass { background: rgba(15,23,42,.85); }
+        html[data-theme="dark"] .bg-white { background-color: #1E293B; }
+        html[data-theme="dark"] .bg-neutral-50 { background-color: #172033; }
+        html[data-theme="dark"] .bg-neutral-50\/50 { background-color: #131C2E; }
+        html[data-theme="dark"] .bg-neutral-100 { background-color: #273449; }
+        html[data-theme="dark"] .bg-neutral-200 { background-color: #334155; }
+        html[data-theme="dark"] .bg-amber-50 { background-color: #3A2E10; }
+        html[data-theme="dark"] .bg-amber-50\/80 { background-color: rgba(58,46,16,.85); }
+        html[data-theme="dark"] .bg-green-50\/80 { background-color: rgba(20,83,45,.4); }
+        html[data-theme="dark"] .bg-green-100 { background-color: #14532D; }
+        html[data-theme="dark"] .bg-blue-100 { background-color: #1E3A8A; }
+        html[data-theme="dark"] .bg-red-50 { background-color: #3B1A1A; }
+        html[data-theme="dark"] .hover\:bg-neutral-50:hover { background-color: #273449; }
+        html[data-theme="dark"] .text-neutral-800 { color: #F1F5F9; }
+        html[data-theme="dark"] .text-neutral-700 { color: #E2E8F0; }
+        html[data-theme="dark"] .text-neutral-600 { color: #CBD5E1; }
+        html[data-theme="dark"] .text-neutral-500 { color: #94A3B8; }
+        html[data-theme="dark"] .text-neutral-400 { color: #64748B; }
+        html[data-theme="dark"] .text-primary { color: #60A5FA; }
+        html[data-theme="dark"] .text-amber-700 { color: #FCD34D; }
+        html[data-theme="dark"] .text-amber-800 { color: #FDE68A; }
+        html[data-theme="dark"] .text-green-700 { color: #86EFAC; }
+        html[data-theme="dark"] .text-blue-700 { color: #93C5FD; }
+        html[data-theme="dark"] .text-red-600 { color: #FCA5A5; }
+        html[data-theme="dark"] .border-neutral-100 { border-color: #243044; }
+        html[data-theme="dark"] .border-neutral-200 { border-color: #334155; }
+        html[data-theme="dark"] .border-neutral-300 { border-color: #475569; }
+        html[data-theme="dark"] .border-amber-100 { border-color: #5B4A1A; }
+        html[data-theme="dark"] .border-green-100 { border-color: #166534; }
+        html[data-theme="dark"] .border-red-100 { border-color: #7F1D1D; }
+        html[data-theme="dark"] .border-white\/50, html[data-theme="dark"] .border-white\/80 { border-color: rgba(255,255,255,.08); }
+        html[data-theme="dark"] .model-card { background-color: #172033 !important; }
+        html[data-theme="dark"] .model-card.selected { background-color: #1E3A5F !important; }
+        html[data-theme="dark"] input[type="text"], html[data-theme="dark"] input[type="password"] { color: #F1F5F9; }
+        html[data-theme="dark"] input::placeholder { color: #64748B; }
+        html[data-theme="dark"] code { background: #334155; color: #93C5FD; }
+        html[data-theme="dark"] pre { background: #0B1220; }
+        html[data-theme="dark"] [style*="color:#1E40AF"] { color: #93C5FD !important; }
+        html[data-theme="dark"] .vbtn { background: #1E293B; border-color: #334155; color: #E2E8F0; }
+        html[data-theme="dark"] .vbtn:hover { background: #273449; }
+        html[data-theme="dark"] .vbtn.active { background: linear-gradient(135deg,#2563EB 0%,#7C3AED 100%); color: #fff; border-color: transparent; }
+        html[data-theme="dark"] .vstatus { color: #60A5FA; }
+        html[data-theme="dark"] .speak-btn { background: #1E3A5F; border-color: #1E40AF; color: #93C5FD; }
+        html[data-theme="dark"] .speak-btn:hover { background: #1E40AF; }
+        html[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #475569; }
+        html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #64748B; }
+        html[data-theme="dark"] .mic-on { background: #EF4444 !important; color: #fff !important; border-color: #EF4444 !important; }
     </style>
 </head>
 <body class="font-sans text-neutral-800 min-h-screen flex flex-col scroll-smooth">
@@ -76,10 +137,14 @@
                     <p class="text-xs text-neutral-500 hidden sm:block">Hiểu nhanh hơn, nhớ lâu hơn</p>
                 </div>
             </div>
+            <div class="flex items-center gap-2">
+            <button id="theme-btn" type="button" aria-label="Đổi giao diện sáng/tối"
+                class="w-10 h-10 rounded-xl bg-white border border-neutral-200 flex items-center justify-center hover:border-primary/50 hover:shadow-md transition-all"></button>
             <button id="settings-btn" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-neutral-200 hover:border-primary/50 hover:shadow-md transition-all text-sm font-medium text-neutral-700">
                 <i class="fa fa-cog text-primary"></i>
                 <span class="hidden sm:inline">Cấu Hình API</span>
             </button>
+            </div>
         </div>
     </header>
 
@@ -184,6 +249,22 @@
                             </div>
                         </label>
 
+                        <label class="model-card rounded-xl p-4 cursor-pointer block bg-neutral-50">
+                            <input type="radio" name="model" value="mistral" class="hidden">
+                            <div class="flex items-start gap-3">
+                                <div class="w-5 h-5 mt-0.5 rounded-full border-2 border-neutral-300 flex items-center justify-center flex-shrink-0 radio-indicator">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-primary scale-0 transition-transform"></span>
+                                </div>
+                                <div class="flex-1">
+                                    <span class="font-bold text-neutral-800">🌬️ Mistral Small</span>
+                                    <p class="text-sm text-neutral-600 mt-1">✅ Gói Experiment miễn phí (cần xác minh số điện thoại) • 🖼️ Đọc được ảnh</p>
+                                    <p class="text-xs text-primary mt-1.5">
+                                        🔑 Lấy key: <a href="https://console.mistral.ai/api-keys" target="_blank" class="underline hover:text-primaryDark">console.mistral.ai/api-keys</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </label>
+
                         <label class="model-card rounded-xl p-4 cursor-pointer block bg-neutral-50 opacity-75">
                             <input type="radio" name="model" value="openai" class="hidden">
                             <div class="flex items-start gap-3">
@@ -206,7 +287,6 @@
                         <input type="password" id="api-key" placeholder="Dán khóa API vào đây..." autocomplete="off"
                             class="w-full p-3.5 border-2 border-neutral-200 rounded-xl input-focus focus:border-primary outline-none transition-all text-base">
                         <p id="key-hint" class="text-sm text-neutral-500 mt-2">Chọn model để xem hướng dẫn lấy key</p>
-                        <p class="api-key-note text-xs text-neutral-600 mt-2">API key được lưu trong trình duyệt này và gửi trực tiếp đến nhà cung cấp AI. Không dán key vào máy tính công cộng hoặc chia sẻ trang đã lưu key.</p>
                     </div>
 
                     <div class="flex gap-3">
@@ -275,7 +355,7 @@
                                     <li>• "Tóm tắt nội dung và giá trị tác phẩm Tắt đèn"</li>
                                     <li>• "Tại sao lá cây có màu xanh?"</li>
                                     <li>• 📷 Chụp hoặc tải ảnh bài tập lên rồi hỏi "Giải bài này giúp mình"</li>
-                                    <li>• 🎙️ Nhấn nút micro để hỏi và nghe AI trả lời bằng giọng nói</li>
+                                    <li>• 🎙️ Bấm micro để nói, hoặc bật "Trò chuyện bằng giọng nói" để hỏi đáp rảnh tay</li>
                                 </ul>
                             </div>
                         </div>
@@ -285,6 +365,13 @@
                 <div class="p-4 border-t border-neutral-100 bg-white">
                     <!-- Xem trước ảnh đính kèm -->
                     <div id="image-preview" class="gap-2 flex-wrap mb-3" style="display:none"></div>
+
+                    <div class="voice-bar" id="voice-bar">
+                        <button type="button" id="voice-mode-btn" class="vbtn"><i class="fa fa-headphones"></i> <span>Trò chuyện bằng giọng nói</span></button>
+                        <button type="button" id="autospeak-btn" class="vbtn"><i class="fa fa-volume-up"></i> <span>Tự đọc câu trả lời: Tắt</span></button>
+                        <button type="button" id="stop-speak-btn" class="vbtn" style="display:none"><i class="fa fa-stop"></i> <span>Dừng đọc</span></button>
+                        <span id="voice-status" class="vstatus"></span>
+                    </div>
 
                     <form id="chat-form" class="flex gap-2 md:gap-3 items-center">
                         <input type="file" id="file-input" accept="image/*" multiple class="hidden">
@@ -298,8 +385,10 @@
                             class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-white border-2 border-neutral-200 text-primary hover:border-primary/50 hover:bg-neutral-50 transition-all">
                             <i class="fa fa-camera"></i>
                         </button>
-                        <button type="button" id="voice-btn" class="voice-control" title="Bắt đầu đàm thoại bằng giọng nói" aria-label="Bắt đầu đàm thoại bằng giọng nói" aria-pressed="false">
-                            <i class="fa fa-microphone" aria-hidden="true"></i>
+
+                        <button type="button" id="mic-btn" title="Nói để nhập câu hỏi"
+                            class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-white border-2 border-neutral-200 text-primary hover:border-primary/50 hover:bg-neutral-50 transition-all">
+                            <i class="fa fa-microphone"></i>
                         </button>
 
                         <input type="text" id="user-input" placeholder="Đặt câu hỏi hoặc dán/ảnh vào đây..."
@@ -309,7 +398,6 @@
                             <i class="fa fa-paper-plane"></i>
                         </button>
                     </form>
-                    <p id="voice-status" class="voice-status" role="status" aria-live="polite"></p>
                 </div>
             </div>
         </div>
@@ -354,6 +442,14 @@
                 visionModel: null, // không hỗ trợ ảnh
                 hint: '✅ ~60 lượt/ngày miễn phí | Chưa đọc được ảnh | Lấy key tại: platform.deepseek.com'
             },
+            'mistral': {
+                name: 'Mistral Small',
+                provider: 'mistral',
+                model: 'mistral-small-latest',
+                endpoint: 'https://api.mistral.ai/v1/chat/completions',
+                visionModel: 'mistral-small-latest',
+                hint: '✅ Gói Experiment miễn phí | Đọc được ảnh | Lấy key tại: console.mistral.ai/api-keys'
+            },
             'openai': {
                 name: 'OpenAI GPT',
                 provider: 'openai',
@@ -395,15 +491,6 @@
         const cameraBtn = document.getElementById('camera-btn');
         const imagePreview = document.getElementById('image-preview');
         const chatCard = document.getElementById('chat-card');
-        const voiceBtn = document.getElementById('voice-btn');
-        const voiceStatus = document.getElementById('voice-status');
-        const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
-        let voiceModeActive = false;
-        let voiceTurnInFlight = false;
-        let currentRecognition = null;
-        let voiceRestartTimer = null;
-        let voiceErrorMessage = '';
-        let voiceConversationHistory = [];
 
         function init() {
             modelRadios.forEach(radio => {
@@ -418,10 +505,6 @@
             updateKeyHint();
             checkConfigured();
             updateStatus();
-            if (!SpeechRecognitionAPI) {
-                voiceBtn.title = 'Trình duyệt này chưa hỗ trợ nhận dạng giọng nói';
-                voiceBtn.setAttribute('aria-label', voiceBtn.title);
-            }
         }
 
         function updateModelCardStyle(radio) {
@@ -682,14 +765,18 @@
         });
 
         // ====================== CHAT ======================
-        chatForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            await sendQuestion(userInput.value.trim(), false);
-        });
+        let chatHistory = [];   // nhớ ngữ cảnh các lượt trước (chỉ chữ)
+        let sending = false;
 
-        async function sendQuestion(typed, speakAnswer) {
+        async function sendMessage() {
+            if (sending) return false;
+            const typed = userInput.value.trim();
             const images = pendingImages.slice();
-            if ((!typed && !images.length) || !CONFIG.isConfigured) return;
+            if ((!typed && !images.length) || !CONFIG.isConfigured) return false;
+
+            sending = true;
+            stopSpeaking();
+            if (recog) stopListening();
 
             const question = typed || 'Hãy giải thích nội dung trong hình ảnh này.';
             addMessage(typed, 'user', images);
@@ -698,22 +785,19 @@
             renderPreviews();
 
             const loadingId = addLoading();
+            if (voiceMode) setVoiceStatus('🤔 Đang suy nghĩ...');
             try {
-                const history = speakAnswer ? voiceConversationHistory.slice(-12) : [];
-                const answer = await callAI(question, images, history);
+                const answer = await callAI(question, images, voiceMode);
                 removeLoading(loadingId);
                 addMessage(answer, 'ai');
-                if (speakAnswer) {
-                    voiceConversationHistory.push(
-                        { role: 'user', content: question },
-                        { role: 'assistant', content: answer }
-                    );
-                    if (voiceConversationHistory.length > 24) {
-                        voiceConversationHistory = voiceConversationHistory.slice(-24);
-                    }
-                }
-                if (speakAnswer && voiceModeActive) {
-                    await speakAIResponse(answer);
+                chatHistory.push({ role: 'user', text: question }, { role: 'assistant', text: answer });
+                if (chatHistory.length > 12) chatHistory = chatHistory.slice(-12);
+
+                if (voiceMode) {
+                    setVoiceStatus('🔊 Đang trả lời...');
+                    speak(answer, () => { if (voiceMode) listen(); });
+                } else if (autoSpeak) {
+                    speak(answer);
                 }
             } catch (err) {
                 removeLoading(loadingId);
@@ -723,169 +807,14 @@
                     addMessage(`❌ **Lỗi kết nối:** ${err.message}\n\n💡 **Cách khắc phục:**\n• Kiểm tra lại API Key đã dán đúng chưa\n• Kiểm tra hạn mức sử dụng của model\n• Thử chọn nhà cung cấp khác`, 'ai');
                 }
                 console.error(err);
+                if (voiceMode) stopVoiceMode();
             } finally {
-                if (speakAnswer) {
-                    voiceTurnInFlight = false;
-                    if (voiceModeActive) scheduleVoiceRestart();
-                }
+                sending = false;
             }
+            return true;
         }
 
-        function setVoiceStatus(message, state = '') {
-            voiceStatus.textContent = message;
-            voiceStatus.className = `voice-status${message ? ' is-visible' : ''}${state ? ` is-${state}` : ''}`;
-        }
-
-        function updateVoiceButton() {
-            voiceBtn.classList.toggle('voice-active', voiceModeActive);
-            voiceBtn.classList.toggle('voice-listening', voiceModeActive && !voiceTurnInFlight && !!currentRecognition);
-            voiceBtn.setAttribute('aria-pressed', String(voiceModeActive));
-            voiceBtn.title = voiceModeActive ? 'Dừng đàm thoại bằng giọng nói' : 'Bắt đầu đàm thoại bằng giọng nói';
-            voiceBtn.setAttribute('aria-label', voiceBtn.title);
-            voiceBtn.innerHTML = `<i class="fa ${voiceModeActive ? 'fa-stop' : 'fa-microphone'}" aria-hidden="true"></i>`;
-        }
-
-        function scheduleVoiceRestart() {
-            clearTimeout(voiceRestartTimer);
-            if (!voiceModeActive || voiceTurnInFlight) return;
-            voiceRestartTimer = setTimeout(startVoiceRecognition, 450);
-        }
-
-        function startVoiceRecognition() {
-            if (!voiceModeActive || voiceTurnInFlight || currentRecognition) return;
-            if (!CONFIG.isConfigured) {
-                stopVoiceChat();
-                showToast('Cấu hình model và API key trước khi bắt đầu đàm thoại.');
-                return;
-            }
-            if (!SpeechRecognitionAPI) {
-                stopVoiceChat();
-                showToast('Trình duyệt này chưa hỗ trợ nhận dạng giọng nói. Hãy thử Chrome hoặc Edge.');
-                return;
-            }
-            if (!window.isSecureContext && location.protocol !== 'file:') {
-                stopVoiceChat();
-                showToast('Micro cần trang web chạy trên kết nối bảo mật HTTPS.');
-                return;
-            }
-
-            const recognition = new SpeechRecognitionAPI();
-            currentRecognition = recognition;
-            recognition.lang = 'vi-VN';
-            recognition.continuous = false;
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-            voiceErrorMessage = '';
-            recognition.onstart = () => {
-                setVoiceStatus('Đang nghe — hãy nói câu hỏi của bạn. Âm thanh có thể được xử lý bởi dịch vụ nhận dạng của trình duyệt.', 'listening');
-                updateVoiceButton();
-            };
-            recognition.onresult = (event) => {
-                const transcript = event.results?.[event.results.length - 1]?.[0]?.transcript?.trim();
-                if (!transcript || !voiceModeActive) return;
-                voiceTurnInFlight = true;
-                userInput.value = transcript;
-                setVoiceStatus(`Bạn vừa nói: “${transcript}”`, 'speaking');
-                updateVoiceButton();
-                void sendQuestion(transcript, true);
-            };
-            recognition.onerror = (event) => {
-                const errors = {
-                    'not-allowed': 'Bạn chưa cấp quyền micro. Hãy cho phép micro rồi bật đàm thoại lại.',
-                    'service-not-allowed': 'Trình duyệt không được phép dùng dịch vụ nhận dạng giọng nói.',
-                    'audio-capture': 'Không tìm thấy micro. Hãy kiểm tra thiết bị đầu vào âm thanh.',
-                    'network': 'Không thể kết nối dịch vụ nhận dạng giọng nói. Hãy kiểm tra mạng.'
-                };
-                voiceErrorMessage = errors[event.error] || (event.error === 'no-speech' ? 'Chưa nghe thấy câu hỏi.' : '');
-                if (voiceErrorMessage) setVoiceStatus(voiceErrorMessage);
-                if (['not-allowed', 'service-not-allowed', 'audio-capture', 'network'].includes(event.error)) {
-                    voiceModeActive = false;
-                    updateVoiceButton();
-                }
-            };
-            recognition.onend = () => {
-                if (currentRecognition === recognition) currentRecognition = null;
-                updateVoiceButton();
-                if (voiceErrorMessage && !voiceModeActive) return;
-                if (voiceModeActive && !voiceTurnInFlight) scheduleVoiceRestart();
-            };
-            try {
-                recognition.start();
-                updateVoiceButton();
-            } catch (error) {
-                currentRecognition = null;
-                voiceModeActive = false;
-                updateVoiceButton();
-                setVoiceStatus('Không thể bật micro. Hãy thử lại và kiểm tra quyền truy cập.');
-                console.error(error);
-            }
-        }
-
-        function stopVoiceChat() {
-            voiceModeActive = false;
-            clearTimeout(voiceRestartTimer);
-            if (currentRecognition) {
-                const recognition = currentRecognition;
-                currentRecognition = null;
-                try { recognition.abort(); } catch (error) { console.error(error); }
-            }
-            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-            voiceTurnInFlight = false;
-            updateVoiceButton();
-            setVoiceStatus('Đã dừng đàm thoại bằng giọng nói.');
-        }
-
-        function textForSpeech(text) {
-            return String(text)
-                .replace(/```[\s\S]*?```/g, 'Đoạn mã được hiển thị trên màn hình.')
-                .replace(/\$\$[\s\S]*?\$\$/g, 'Công thức toán được hiển thị trên màn hình.')
-                .replace(/\$[^$]+\$/g, 'công thức toán')
-                .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
-                .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-                .replace(/^#{1,6}\s*/gm, '')
-                .replace(/[*_`~>#]/g, '')
-                .replace(/\s+/g, ' ')
-                .trim();
-        }
-
-        function speakAIResponse(text) {
-            return new Promise((resolve) => {
-                if (!voiceModeActive || !('speechSynthesis' in window) || !window.SpeechSynthesisUtterance) {
-                    resolve();
-                    return;
-                }
-                const spokenText = textForSpeech(text);
-                if (!spokenText) { resolve(); return; }
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(spokenText);
-                utterance.lang = 'vi-VN';
-                utterance.rate = 1;
-                utterance.onstart = () => setVoiceStatus('AI đang trả lời bằng giọng nói…', 'speaking');
-                utterance.onend = () => resolve();
-                utterance.onerror = () => resolve();
-                window.speechSynthesis.speak(utterance);
-            });
-        }
-
-        voiceBtn.addEventListener('click', () => {
-            if (voiceModeActive) {
-                stopVoiceChat();
-                return;
-            }
-            if (!CONFIG.isConfigured) {
-                showToast('Cấu hình model và API key trước khi bắt đầu đàm thoại.');
-                settingsBtn.click();
-                return;
-            }
-            if (!('speechSynthesis' in window) || !window.SpeechSynthesisUtterance) {
-                showToast('Trình duyệt này chưa hỗ trợ phát câu trả lời bằng giọng nói.');
-                return;
-            }
-            voiceModeActive = true;
-            setVoiceStatus('Đàm thoại đã bật. Hãy nói câu hỏi sau khi trình duyệt xin quyền micro.', 'listening');
-            updateVoiceButton();
-            startVoiceRecognition();
-        });
+        chatForm.addEventListener('submit', (e) => { e.preventDefault(); sendMessage(); });
 
         async function apiError(res) {
             let msg = '';
@@ -893,44 +822,43 @@
             return new Error(`Lỗi ${res.status}${msg ? ': ' + msg : ' — Kiểm tra key hoặc hạn mức'}`);
         }
 
-        async function callAI(question, images = [], history = []) {
+        async function callAI(question, images = [], spoken = false) {
             const modelInfo = MODELS[CONFIG.selectedModel];
             const hasImages = images.length > 0;
 
             if (hasImages && !modelInfo.visionModel) {
-                const err = new Error(`${modelInfo.name} chưa đọc được hình ảnh. Hãy mở "Cấu Hình API" và chọn Gemini, Groq, OpenRouter hoặc OpenAI để gửi ảnh.`);
+                const err = new Error(`${modelInfo.name} chưa đọc được hình ảnh. Hãy mở "Cấu Hình API" và chọn Gemini, Groq, OpenRouter, Mistral hoặc OpenAI để gửi ảnh.`);
                 err.friendly = true;
                 throw err;
             }
 
-            const systemPrompt = `Bạn là trợ lý AI hỗ trợ học tập tuyệt vời, thân thiện, dễ gần. Nhiệm vụ:
+            let systemPrompt = `Bạn là trợ lý AI hỗ trợ học tập tuyệt vời, thân thiện, dễ gần. Nhiệm vụ:
 - Giải thích kiến thức đơn giản, rõ ràng, phù hợp học sinh-sinh viên Việt Nam
 - Dùng ví dụ cụ thể, dễ liên hệ
 - Sử dụng cấu trúc rõ ràng
 - Nếu có hình ảnh (bài tập, sơ đồ, đoạn văn...), hãy đọc kỹ nội dung trong ảnh rồi giải thích/giải bài từng bước
 - Viết công thức toán bằng LaTeX: $...$ cho công thức trong dòng, $$...$$ cho công thức đứng riêng
+- Đây là cuộc trò chuyện nhiều lượt, hãy nhớ ngữ cảnh các câu trước đó
 - Luôn trả lời bằng tiếng Việt, trừ khi yêu cầu khác
 - Giọng văn thân thiện, kiên nhẫn, khuyến khích học tập`;
+            if (spoken) {
+                systemPrompt += `
+- ĐANG TRÒ CHUYỆN BẰNG GIỌNG NÓI: trả lời ngắn gọn (khoảng 3-5 câu), tự nhiên như nói chuyện; không dùng tiêu đề, danh sách, ký hiệu markdown hay LaTeX; công thức hãy diễn đạt bằng lời`;
+            }
 
             if (modelInfo.provider === 'gemini') {
                 const url = `${modelInfo.endpoint}?key=${encodeURIComponent(CONFIG.apiKey)}`;
-                const parts = [
-                    { text: systemPrompt },
-                    ...images.map(img => ({ inline_data: { mime_type: img.mime, data: img.base64 } })),
-                    { text: question }
+                const contents = [
+                    ...chatHistory.map(m => ({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.text }] })),
+                    { role: 'user', parts: [
+                        ...images.map(img => ({ inline_data: { mime_type: img.mime, data: img.base64 } })),
+                        { text: question }
+                    ] }
                 ];
                 const res = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [
-                            ...history.map(turn => ({
-                                role: turn.role === 'assistant' ? 'model' : 'user',
-                                parts: [{ text: turn.content }]
-                            })),
-                            { role: 'user', parts }
-                        ]
-                    })
+                    body: JSON.stringify({ systemInstruction: { parts: [{ text: systemPrompt }] }, contents })
                 });
                 if (!res.ok) throw await apiError(res);
                 const data = await res.json();
@@ -946,11 +874,12 @@
                     headers['HTTP-Referer'] = window.location.origin && window.location.origin !== 'null' ? window.location.origin : 'https://localhost';
                     headers['X-Title'] = 'AI Hoc Tap Thong Minh';
                 }
+                const imgPart = (img) => ({
+                    type: 'image_url',
+                    image_url: modelInfo.provider === 'mistral' ? img.dataUrl : { url: img.dataUrl }
+                });
                 const userContent = hasImages
-                    ? [
-                        { type: 'text', text: question },
-                        ...images.map(img => ({ type: 'image_url', image_url: { url: img.dataUrl } }))
-                      ]
+                    ? [{ type: 'text', text: question }, ...images.map(imgPart)]
                     : question;
                 const res = await fetch(modelInfo.endpoint, {
                     method: 'POST',
@@ -959,7 +888,7 @@
                         model: hasImages ? modelInfo.visionModel : modelInfo.model,
                         messages: [
                             { role: 'system', content: systemPrompt },
-                            ...history,
+                            ...chatHistory.map(m => ({ role: m.role, content: m.text })),
                             { role: 'user', content: userContent }
                         ],
                         temperature: 0.7
@@ -1058,8 +987,11 @@
                     <div class="bg-white p-4 md:p-5 chat-bubble-ai max-w-[88%] shadow-sm border border-neutral-100">
                         <p class="font-bold text-primary mb-2">AI Trợ Giúp</p>
                         <div class="text-neutral-700">${formatContent(content)}</div>
+                        <button type="button" class="speak-btn"><i class="fa fa-volume-up"></i> Nghe</button>
                     </div>
                 `;
+                const sb = div.querySelector('.speak-btn');
+                if (sb) sb.addEventListener('click', () => toggleSpeak(content));
             }
             chatMessages.appendChild(div);
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -1089,6 +1021,282 @@
         }
 
         function removeLoading(id) { document.getElementById(id)?.remove(); }
+
+        // ====================== GIỌNG NÓI ======================
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const synth = window.speechSynthesis;
+        const micBtn = document.getElementById('mic-btn');
+        const voiceModeBtn = document.getElementById('voice-mode-btn');
+        const autoSpeakBtn = document.getElementById('autospeak-btn');
+        const stopSpeakBtn = document.getElementById('stop-speak-btn');
+        const voiceStatus = document.getElementById('voice-status');
+        const DEFAULT_PLACEHOLDER = userInput.placeholder;
+
+        let recog = null;
+        let voiceMode = false;
+        let autoSpeak = store.get('auto_speak') === '1';
+        let speakToken = 0;
+        let isSpeaking = false;
+        let silentCount = 0;
+        let recogFatal = '';
+        let warnedNoVoice = false;
+
+        function setVoiceStatus(t) { voiceStatus.textContent = t || ''; }
+
+        // ---- Chuyển nội dung thành văn bản dễ đọc thành tiếng ----
+        function mathToSpeech(tex) {
+            return ' ' + tex
+                .replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g, '$1 chia $2')
+                .replace(/\\sqrt\{([^{}]*)\}/g, 'căn của $1')
+                .replace(/\^\{?2\}?/g, ' bình phương')
+                .replace(/\^\{?3\}?/g, ' lập phương')
+                .replace(/\^\{([^{}]*)\}|\^(\S)/g, (m, a, b) => ' mũ ' + (a || b))
+                .replace(/\\(cdot|times)/g, ' nhân ')
+                .replace(/\\div/g, ' chia ')
+                .replace(/\\(le|leq)\b/g, ' nhỏ hơn hoặc bằng ')
+                .replace(/\\(ge|geq)\b/g, ' lớn hơn hoặc bằng ')
+                .replace(/\\pi\b/g, ' pi ')
+                .replace(/\\[a-zA-Z]+/g, ' ')
+                .replace(/[{}\\]/g, '')
+                .replace(/=/g, ' bằng ').replace(/\+/g, ' cộng ').replace(/-/g, ' trừ ')
+                .replace(/\//g, ' chia ').replace(/</g, ' nhỏ hơn ').replace(/>/g, ' lớn hơn ') + ' ';
+        }
+
+        function toSpeakable(text) {
+            return text
+                .replace(/```[\s\S]*?```/g, ' (đoạn mã, bạn xem trên màn hình) ')
+                .replace(/\$\$([\s\S]+?)\$\$/g, (_, t) => mathToSpeech(t))
+                .replace(/\\\[([\s\S]+?)\\\]/g, (_, t) => mathToSpeech(t))
+                .replace(/\\\(([\s\S]+?)\\\)/g, (_, t) => mathToSpeech(t))
+                .replace(/\$([^\s$](?:[^$\n]*?[^\s$])?)\$(?!\d)/g, (_, t) => mathToSpeech(t))
+                .replace(/`([^`]*)`/g, '$1')
+                .replace(/^\s{0,3}#{1,6}\s+/gm, '')
+                .replace(/\*\*|__|\*/g, '')
+                .replace(/^\s*[-•]\s+/gm, '')
+                .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu, '')
+                .replace(/https?:\/\/\S+/g, ' đường dẫn ')
+                .replace(/[ \t]+/g, ' ').replace(/\n{2,}/g, '\n').trim();
+        }
+
+        // Chia nhỏ để trình duyệt không bị cắt giữa chừng khi đọc câu dài
+        function splitForSpeech(t) {
+            const pieces = [];
+            t.replace(/([.!?…]+)\s+/g, '$1\n').split('\n').forEach(line => {
+                let x = line.trim();
+                while (x.length > 220) {
+                    let k = x.lastIndexOf(' ', 200);
+                    if (k <= 0) k = 200;
+                    pieces.push(x.slice(0, k).trim());
+                    x = x.slice(k).trim();
+                }
+                if (x) pieces.push(x);
+            });
+            const out = [];
+            let cur = '';
+            for (const piece of pieces) {
+                if (cur && (cur + ' ' + piece).length > 180) { out.push(cur); cur = piece; }
+                else cur = cur ? cur + ' ' + piece : piece;
+            }
+            if (cur) out.push(cur);
+            return out;
+        }
+
+        function pickVoice() {
+            const vs = synth ? synth.getVoices() : [];
+            return vs.find(v => /^vi/i.test(v.lang)) || null;
+        }
+
+        function updateSpeakUI(on) {
+            isSpeaking = on;
+            stopSpeakBtn.style.display = on ? 'inline-flex' : 'none';
+        }
+
+        function stopSpeaking() {
+            speakToken++;
+            if (synth) synth.cancel();
+            updateSpeakUI(false);
+        }
+
+        function speak(text, onDone) {
+            if (!synth) { showToast('Trình duyệt chưa hỗ trợ đọc thành tiếng.'); if (onDone) onDone(); return; }
+            synth.cancel();
+            const token = ++speakToken;
+            const chunks = splitForSpeech(toSpeakable(text));
+            if (!chunks.length) { if (onDone) onDone(); return; }
+            const voice = pickVoice();
+            if (!voice && !warnedNoVoice && synth.getVoices().length) {
+                warnedNoVoice = true;
+                showToast('Máy chưa có giọng đọc tiếng Việt, âm thanh có thể không chuẩn.');
+            }
+            let i = 0;
+            updateSpeakUI(true);
+            const next = () => {
+                if (token !== speakToken) return;
+                if (i >= chunks.length) { updateSpeakUI(false); if (onDone) onDone(); return; }
+                const u = new SpeechSynthesisUtterance(chunks[i++]);
+                u.lang = 'vi-VN';
+                if (voice) u.voice = voice;
+                u.rate = 1;
+                u.onend = next;
+                u.onerror = (e) => {
+                    if (token !== speakToken) return;
+                    if (e.error === 'canceled' || e.error === 'interrupted') return;
+                    next();
+                };
+                synth.speak(u);
+            };
+            next();
+        }
+
+        function toggleSpeak(text) {
+            if (isSpeaking) stopSpeaking(); else speak(text);
+        }
+
+        // ---- Nhận dạng giọng nói ----
+        function setMicUI(on) { micBtn.classList.toggle('mic-on', on); }
+
+        function stopListening() {
+            if (recog) {
+                const r = recog;
+                recog = null;
+                r.onend = r.onresult = r.onerror = r.onstart = null;
+                try { r.abort(); } catch (e) {}
+            }
+            setMicUI(false);
+            userInput.placeholder = DEFAULT_PLACEHOLDER;
+        }
+
+        const RECOG_ERRORS = {
+            'not-allowed': 'Bạn chưa cho phép dùng micro. Hãy cấp quyền micro cho trang này.',
+            'service-not-allowed': 'Trình duyệt không cho phép nhận dạng giọng nói trên trang này.',
+            'audio-capture': 'Không tìm thấy micro trên thiết bị.',
+            'network': 'Nhận dạng giọng nói cần kết nối mạng.',
+            'language-not-supported': 'Trình duyệt không hỗ trợ nhận dạng tiếng Việt.'
+        };
+
+        function listen() {
+            if (!SR) { showToast('Trình duyệt chưa hỗ trợ nhận dạng giọng nói. Hãy dùng Chrome, Edge hoặc Safari.'); return; }
+            stopListening();
+            recogFatal = '';
+            const r = new SR();
+            recog = r;
+            r.lang = 'vi-VN';
+            r.interimResults = true;
+            r.continuous = false;
+            r.maxAlternatives = 1;
+            let finalText = '';
+
+            r.onstart = () => {
+                setMicUI(true);
+                userInput.placeholder = '🎙️ Đang nghe... hãy nói đi';
+                if (voiceMode) setVoiceStatus('🎙️ Đang nghe... hãy nói đi');
+            };
+            r.onresult = (e) => {
+                let interim = '';
+                for (let i = e.resultIndex; i < e.results.length; i++) {
+                    const res = e.results[i];
+                    if (res.isFinal) finalText += res[0].transcript;
+                    else interim += res[0].transcript;
+                }
+                userInput.value = (finalText + interim).trim();
+            };
+            r.onerror = (e) => { if (RECOG_ERRORS[e.error]) recogFatal = RECOG_ERRORS[e.error]; };
+            r.onend = () => {
+                if (recog !== r) return;
+                recog = null;
+                setMicUI(false);
+                userInput.placeholder = DEFAULT_PLACEHOLDER;
+
+                if (recogFatal) {
+                    showToast(recogFatal);
+                    if (voiceMode) stopVoiceMode();
+                    return;
+                }
+                if (!voiceMode) return;   // chế độ đọc chính tả: giữ chữ trong ô nhập để bạn kiểm tra rồi gửi
+
+                const text = userInput.value.trim();
+                if (text) {
+                    silentCount = 0;
+                    sendMessage().then(ok => { if (!ok && voiceMode) stopVoiceMode(); });
+                } else if (++silentCount >= 3) {
+                    stopVoiceMode();
+                    showToast('Đã tắt trò chuyện vì không nghe thấy giọng nói.', false);
+                } else {
+                    listen();
+                }
+            };
+            try { r.start(); } catch (e) { recog = null; showToast('Không thể bật micro: ' + e.message); }
+        }
+
+        micBtn.addEventListener('click', () => {
+            if (voiceMode) { showToast('Đang ở chế độ trò chuyện. Bấm "Kết thúc trò chuyện" để dừng.', false); return; }
+            if (recog) { recog.stop(); return; }   // bấm lần nữa để dừng nói
+            stopSpeaking();
+            listen();
+        });
+
+        function startVoiceMode() {
+            if (!SR) { showToast('Trình duyệt chưa hỗ trợ nhận dạng giọng nói. Hãy dùng Chrome, Edge hoặc Safari.'); return; }
+            if (!CONFIG.isConfigured) { showToast('Hãy cấu hình API trước khi trò chuyện bằng giọng nói.'); return; }
+            voiceMode = true;
+            silentCount = 0;
+            voiceModeBtn.classList.add('active');
+            voiceModeBtn.querySelector('span').textContent = 'Kết thúc trò chuyện';
+            stopSpeaking();
+            listen();
+        }
+
+        function stopVoiceMode() {
+            voiceMode = false;
+            stopListening();
+            stopSpeaking();
+            voiceModeBtn.classList.remove('active');
+            voiceModeBtn.querySelector('span').textContent = 'Trò chuyện bằng giọng nói';
+            setVoiceStatus('');
+        }
+
+        voiceModeBtn.addEventListener('click', () => { if (voiceMode) stopVoiceMode(); else startVoiceMode(); });
+        stopSpeakBtn.addEventListener('click', () => {
+            const wasVoice = voiceMode;
+            stopSpeaking();
+            if (wasVoice) listen();   // đang trò chuyện: dừng đọc thì chuyển sang nghe luôn
+        });
+
+        function renderAutoSpeak() {
+            autoSpeakBtn.classList.toggle('active', autoSpeak);
+            autoSpeakBtn.querySelector('span').textContent = 'Tự đọc câu trả lời: ' + (autoSpeak ? 'Bật' : 'Tắt');
+        }
+        autoSpeakBtn.addEventListener('click', () => {
+            autoSpeak = !autoSpeak;
+            store.set('auto_speak', autoSpeak ? '1' : '0');
+            renderAutoSpeak();
+            if (!autoSpeak && !voiceMode) stopSpeaking();
+        });
+        renderAutoSpeak();
+
+        if (!SR) { micBtn.style.opacity = '.5'; voiceModeBtn.style.opacity = '.5'; }
+        if (synth) synth.getVoices();   // nạp sẵn danh sách giọng đọc
+        window.addEventListener('beforeunload', () => { if (synth) synth.cancel(); });
+
+        // ====================== GIAO DIỆN SÁNG / TỐI ======================
+        const themeBtn = document.getElementById('theme-btn');
+        function currentTheme() { return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'; }
+        function applyTheme(t, save) {
+            document.documentElement.setAttribute('data-theme', t);
+            themeBtn.innerHTML = t === 'dark'
+                ? '<i class="fa fa-sun-o text-primary text-lg"></i>'
+                : '<i class="fa fa-moon-o text-primary text-lg"></i>';
+            themeBtn.title = t === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối';
+            if (save) store.set('theme', t);
+        }
+        themeBtn.addEventListener('click', () => applyTheme(currentTheme() === 'dark' ? 'light' : 'dark', true));
+        applyTheme(currentTheme(), false);
+        // Nếu chưa tự chọn, tự đổi theo hệ điều hành khi người dùng đổi chế độ máy
+        if (window.matchMedia) {
+            const mq = window.matchMedia('(prefers-color-scheme: dark)');
+            const onSys = (e) => { if (!store.get('theme')) applyTheme(e.matches ? 'dark' : 'light', false); };
+            if (mq.addEventListener) mq.addEventListener('change', onSys);
+        }
 
         init();
     </script>
