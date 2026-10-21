@@ -202,8 +202,189 @@
         html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #64748B; }
         html[data-theme="dark"] .mic-on { background: #EF4444 !important; color: #fff !important; border-color: #EF4444 !important; }
     </style>
+    <style>
+        body {
+            position: relative;
+            isolation: isolate;
+            background: transparent !important;
+        }
+        html[data-theme="dark"] body {
+            background: transparent !important;
+        }
+        .tech-code-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse at 16% 12%, rgba(96, 165, 250, .28), transparent 34%),
+                radial-gradient(ellipse at 86% 78%, rgba(34, 211, 238, .18), transparent 32%),
+                linear-gradient(135deg, #dcecff 0%, #c9ddfb 48%, #e5f4ff 100%);
+        }
+        .tech-code-bg::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(37, 99, 235, .055) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(37, 99, 235, .055) 1px, transparent 1px);
+            background-size: 58px 58px;
+            mask-image: radial-gradient(ellipse at center, #000 8%, transparent 78%);
+        }
+        .tech-code-bg::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(239, 246, 255, .38), transparent 22%, transparent 78%, rgba(239, 246, 255, .34));
+        }
+        .code-column {
+            position: absolute;
+            top: -5%;
+            display: flex;
+            flex-direction: column;
+            width: max-content;
+            font: 500 12px/2.15 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            letter-spacing: .02em;
+            white-space: nowrap;
+            color: rgba(30, 64, 175, .5);
+            text-shadow: 0 0 18px rgba(37, 99, 235, .14);
+            animation: code-scroll-up 42s linear infinite;
+        }
+        .code-column-left {
+            left: 1.5%;
+            animation-name: code-scroll-left;
+        }
+        .code-column-right {
+            right: 1.5%;
+            color: rgba(8, 145, 178, .44);
+            animation-name: code-scroll-right;
+            animation-duration: 52s;
+            animation-delay: -26s;
+        }
+        .code-loop {
+            display: flex;
+            flex-direction: column;
+        }
+        .code-line {
+            display: block;
+            padding: 0 14px;
+        }
+        .code-line:nth-child(3n) { opacity: .48; }
+        .code-line b { color: rgba(37, 99, 235, .74); font-weight: 700; }
+        .code-line em { color: rgba(124, 58, 237, .68); font-style: normal; }
+        .code-line strong { color: rgba(8, 145, 178, .72); font-weight: 700; }
+        @keyframes code-scroll-left {
+            to { transform: translate3d(0, -50%, 0) rotate(-7deg); }
+        }
+        @keyframes code-scroll-right {
+            to { transform: translate3d(0, -50%, 0) rotate(7deg); }
+        }
+        html[data-theme="dark"] .tech-code-bg {
+            background:
+                radial-gradient(ellipse at 16% 12%, rgba(37, 99, 235, .28), transparent 34%),
+                radial-gradient(ellipse at 86% 78%, rgba(8, 145, 178, .2), transparent 32%),
+                linear-gradient(135deg, #061326 0%, #0a2450 50%, #071a33 100%);
+        }
+        html[data-theme="dark"] .tech-code-bg::before {
+            background-image:
+                linear-gradient(rgba(96, 165, 250, .075) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(96, 165, 250, .075) 1px, transparent 1px);
+        }
+        html[data-theme="dark"] .tech-code-bg::after {
+            background: linear-gradient(90deg, rgba(6, 19, 38, .68), transparent 22%, transparent 78%, rgba(7, 26, 51, .68));
+        }
+        html[data-theme="dark"] .code-column { color: rgba(147, 197, 253, .42); }
+        html[data-theme="dark"] .code-column-right { color: rgba(103, 232, 249, .38); }
+        html[data-theme="dark"] .code-line b { color: rgba(96, 165, 250, .78); }
+        html[data-theme="dark"] .code-line em { color: rgba(196, 181, 253, .7); }
+        html[data-theme="dark"] .code-line strong { color: rgba(103, 232, 249, .74); }
+        @media (max-width: 680px) {
+            .code-column { font-size: 10px; opacity: .42; }
+            .code-column-left { left: -10ch; }
+            .code-column-right { right: -12ch; }
+            .tech-code-bg { background-position: center; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .code-column { animation: none; top: 8%; }
+        }
+    </style>
 </head>
 <body class="font-sans text-neutral-800 min-h-screen flex flex-col scroll-smooth">
+    <div class="tech-code-bg" aria-hidden="true">
+        <div class="code-column code-column-left">
+            <div class="code-loop">
+                <span class="code-line"><b>01</b> <em>const</em> study = <strong>async</strong> () =&gt; {</span>
+                <span class="code-line"><b>02</b> &nbsp; <em>await</em> learner.ask(question);</span>
+                <span class="code-line"><b>03</b> &nbsp; <em>return</em> explain(topic, "easy");</span>
+                <span class="code-line"><b>04</b> };</span>
+                <span class="code-line"><b>05</b> <em>class</em> KnowledgeGraph {</span>
+                <span class="code-line"><b>06</b> &nbsp; connect(idea, context);</span>
+                <span class="code-line"><b>07</b> &nbsp; remember(key, insight);</span>
+                <span class="code-line"><b>08</b> }</span>
+                <span class="code-line"><b>09</b> <em>function</em> makeItSimple() {</span>
+                <span class="code-line"><b>10</b> &nbsp; explain(stepByStep);</span>
+                <span class="code-line"><b>11</b> &nbsp; return "I understand";</span>
+                <span class="code-line"><b>12</b> }</span>
+                <span class="code-line"><b>13</b> <em>const</em> ideas = await explore();</span>
+                <span class="code-line"><b>14</b> knowledge.map(connect);</span>
+                <span class="code-line"><b>15</b> learn(today, growTomorrow);</span>
+            </div>
+            <div class="code-loop" aria-hidden="true">
+                <span class="code-line"><b>01</b> <em>const</em> study = <strong>async</strong> () =&gt; {</span>
+                <span class="code-line"><b>02</b> &nbsp; <em>await</em> learner.ask(question);</span>
+                <span class="code-line"><b>03</b> &nbsp; <em>return</em> explain(topic, "easy");</span>
+                <span class="code-line"><b>04</b> };</span>
+                <span class="code-line"><b>05</b> <em>class</em> KnowledgeGraph {</span>
+                <span class="code-line"><b>06</b> &nbsp; connect(idea, context);</span>
+                <span class="code-line"><b>07</b> &nbsp; remember(key, insight);</span>
+                <span class="code-line"><b>08</b> }</span>
+                <span class="code-line"><b>09</b> <em>function</em> makeItSimple() {</span>
+                <span class="code-line"><b>10</b> &nbsp; explain(stepByStep);</span>
+                <span class="code-line"><b>11</b> &nbsp; return "I understand";</span>
+                <span class="code-line"><b>12</b> }</span>
+                <span class="code-line"><b>13</b> <em>const</em> ideas = await explore();</span>
+                <span class="code-line"><b>14</b> knowledge.map(connect);</span>
+                <span class="code-line"><b>15</b> learn(today, growTomorrow);</span>
+            </div>
+        </div>
+        <div class="code-column code-column-right">
+            <div class="code-loop">
+                <span class="code-line"><b>01</b> import { curiosity } from "mind";</span>
+                <span class="code-line"><b>02</b> <em>const</em> focus = new Signal();</span>
+                <span class="code-line"><b>03</b> focus.on("question", listen);</span>
+                <span class="code-line"><b>04</b> <em>if</em> (confused) clarify();</span>
+                <span class="code-line"><b>05</b> <em>for</em> (const step of lesson) {</span>
+                <span class="code-line"><b>06</b> &nbsp; build(step).withExamples();</span>
+                <span class="code-line"><b>07</b> &nbsp; check(understanding);</span>
+                <span class="code-line"><b>08</b> }</span>
+                <span class="code-line"><b>09</b> response.stream("Vietnamese");</span>
+                <span class="code-line"><b>10</b> voice.speak(answer, { speed });</span>
+                <span class="code-line"><b>11</b> theme.set("blue");</span>
+                <span class="code-line"><b>12</b> <em>return</em> confidence++;</span>
+                <span class="code-line"><b>13</b> await learnSomethingNew();</span>
+                <span class="code-line"><b>14</b> console.log("Keep going");</span>
+                <span class="code-line"><b>15</b> // progress.builds.with.practice</span>
+            </div>
+            <div class="code-loop" aria-hidden="true">
+                <span class="code-line"><b>01</b> import { curiosity } from "mind";</span>
+                <span class="code-line"><b>02</b> <em>const</em> focus = new Signal();</span>
+                <span class="code-line"><b>03</b> focus.on("question", listen);</span>
+                <span class="code-line"><b>04</b> <em>if</em> (confused) clarify();</span>
+                <span class="code-line"><b>05</b> <em>for</em> (const step of lesson) {</span>
+                <span class="code-line"><b>06</b> &nbsp; build(step).withExamples();</span>
+                <span class="code-line"><b>07</b> &nbsp; check(understanding);</span>
+                <span class="code-line"><b>08</b> }</span>
+                <span class="code-line"><b>09</b> response.stream("Vietnamese");</span>
+                <span class="code-line"><b>10</b> voice.speak(answer, { speed });</span>
+                <span class="code-line"><b>11</b> theme.set("blue");</span>
+                <span class="code-line"><b>12</b> <em>return</em> confidence++;</span>
+                <span class="code-line"><b>13</b> await learnSomethingNew();</span>
+                <span class="code-line"><b>14</b> console.log("Keep going");</span>
+                <span class="code-line"><b>15</b> // progress.builds.with.practice</span>
+            </div>
+        </div>
+    </div>
     <!-- Header -->
     <header class="glass sticky top-0 z-40 border-b border-white/50 shadow-sm">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
