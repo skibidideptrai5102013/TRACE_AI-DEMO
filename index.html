@@ -2169,7 +2169,6 @@ html[data-theme="dark"] .bot-tag{ background:#1E3A8A; color:#BFDBFE; }
         let enFatal = '';
         let enAuto = store.get('en_auto') !== '0';
         let enTopic = null;
-        let enWelcomeAudioPlayed = false;
 
         const hasVietnamese = (t) => (t.match(VI_ONLY) || []).length >= 2;
         const setEnStatus = (t) => { enStatus.textContent = t || ''; };
@@ -2467,11 +2466,10 @@ Current topic: ${enTopic ? enTopic.en : 'anything the learner likes'}.`;
         }
         tabQa.addEventListener('click', () => {
             setMode('qa');
-            if (window.loopVerityIntro) window.loopVerityIntro();
         });
         tabEn.addEventListener('click', () => {
             setMode('en');
-            if (window.loopVerityIntro) window.loopVerityIntro();
+            if (window.playVerityIntro) window.playVerityIntro();
         });
 
         enAddMessage(EN_WELCOME, 'ai');
@@ -2532,22 +2530,6 @@ Current topic: ${enTopic ? enTopic.en : 'anything the learner likes'}.`;
             if (onState) onState(true);
             if (pr && pr.catch) pr.catch(fin);
         } catch (e) { fin(); }
-    };
-    window.loopVerityIntro = function () {
-        var my = ++tok;
-        clearTimeout(timer);
-        if (!au) { au = new Audio(SRC); au.preload = 'auto'; }
-        au.onended = au.onerror = null;
-        au.loop = true;
-        try {
-            au.currentTime = 0;
-            var pr = au.play();
-            if (pr && pr.catch) pr.catch(function () {
-                if (my === tok) au.loop = false;
-            });
-        } catch (e) {
-            if (my === tok) au.loop = false;
-        }
     };
 })();
 </script>
