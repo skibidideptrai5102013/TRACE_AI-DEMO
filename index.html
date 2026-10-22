@@ -2465,13 +2465,13 @@ Current topic: ${enTopic ? enTopic.en : 'anything the learner likes'}.`;
             tabEn.classList.toggle('active', en);
             store.set('mode', en ? 'en' : 'qa');
         }
-        tabQa.addEventListener('click', () => setMode('qa'));
+        tabQa.addEventListener('click', () => {
+            setMode('qa');
+            if (window.loopVerityIntro) window.loopVerityIntro();
+        });
         tabEn.addEventListener('click', () => {
             setMode('en');
-            if (!enWelcomeAudioPlayed && window.playVerityIntro) {
-                enWelcomeAudioPlayed = true;
-                window.playVerityIntro();
-            }
+            if (window.loopVerityIntro) window.loopVerityIntro();
         });
 
         enAddMessage(EN_WELCOME, 'ai');
@@ -2509,13 +2509,14 @@ Current topic: ${enTopic ? enTopic.en : 'anything the learner likes'}.`;
     var au = null, tok = 0, timer = null;
     window.stopVerityIntro = function () {
         tok++; clearTimeout(timer);
-        if (au) { try { au.pause(); au.currentTime = 0; } catch (e) {} }
+        if (au) { try { au.loop = false; au.pause(); au.currentTime = 0; } catch (e) {} }
     };
     // done(): gọi khi phát xong (hoặc không phát được); onState(true/false): bắt đầu / kết thúc phát
     window.playVerityIntro = function (done, onState) {
         var my = ++tok, finished = false;
         clearTimeout(timer);
         if (!au) { au = new Audio(SRC); au.preload = 'auto'; }
+        au.loop = false;
         function fin() {
             if (finished || my !== tok) return;
             finished = true; clearTimeout(timer);
@@ -2531,6 +2532,22 @@ Current topic: ${enTopic ? enTopic.en : 'anything the learner likes'}.`;
             if (onState) onState(true);
             if (pr && pr.catch) pr.catch(fin);
         } catch (e) { fin(); }
+    };
+    window.loopVerityIntro = function () {
+        var my = ++tok;
+        clearTimeout(timer);
+        if (!au) { au = new Audio(SRC); au.preload = 'auto'; }
+        au.onended = au.onerror = null;
+        au.loop = true;
+        try {
+            au.currentTime = 0;
+            var pr = au.play();
+            if (pr && pr.catch) pr.catch(function () {
+                if (my === tok) au.loop = false;
+            });
+        } catch (e) {
+            if (my === tok) au.loop = false;
+        }
     };
 })();
 </script>
